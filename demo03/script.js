@@ -15,8 +15,11 @@ audio1.addEventListener("playing", function () {
   var source = audioContent.createMediaElementSource(audio1);
   var splitter = audioContent.createChannelSplitter(2);
   source.connect(splitter);
+
+  var biquadFilter = audioContent.createBiquadFilter();
   // 左声道连接analyser
-  splitter.connect(analyserL, 0);
+  splitter.connect(biquadFilter, 0);
+  biquadFilter.connect(analyserL, 0);
   // 右声道连接analyser
   splitter.connect(analyserR, 1);
   console.log(splitter);
@@ -44,11 +47,11 @@ audio1.addEventListener("playing", function () {
     x = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     analyserL.getByteFrequencyData(dataArrayL);
-    analyserL.getByteFrequencyData(dataArrayR);
+    analyserR.getByteFrequencyData(dataArrayR);
     drawVisualiser(bufferLengthL, x, barWidth, barHeight, dataArrayL);
     drawVisualiser(
       bufferLengthR,
-      x + canvas.width,
+      x - canvas.width / 2,
       barWidth,
       barHeight,
       dataArrayR
